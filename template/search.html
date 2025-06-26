@@ -1,0 +1,22 @@
+{% extends "dashboard.html" %}
+{% block search %}
+{% if search_list %}
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
+        </tr>
+        {% for song in search_list %}
+        <tr>
+            <td>{{ song.title }}</td>
+            <td>{{ song.artist.name }}</td>
+            <td>{{ song.album.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No results found.</p>
+{% endif %}
+
+{% endblock %}

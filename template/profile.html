@@ -1,0 +1,35 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block search %}
+
+
+
+<div class="container mt-5">
+    <h2>Update Profile</h2>
+    <form method="POST" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+
+
+
+
+
+        <div class="mb-3">
+            <label for="phone_no" class="form-label">phone_no</label>
+            <input type="text" class="form-control" id="phone_no" name="phone_no" value="{{ user.phone_no }}">
+        </div>
+
+
+        <!-- Profile Picture -->
+        <div class="mb-3">
+            <label for="profile_img" class="form-label">Profile Picture</label><br>
+            {% if user.profile_img %}
+                <img src="{{ user.profile_img.url }}" alt="Current Picture" class="img-thumbnail mb-2" width="150"><br>
+            {% endif %}
+            <input type="file" class="form-control" id="profile_img" name="profile_img">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block start %}
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="list-group shadow-sm">
+                    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
+                    <a href="#" class="list-group-item list-group-item-action">Profile</a>
+                    <img src="{{user.profile_img.url}}" style="height:200px;width:200px;border-radius: 200px;"/>
+                    <a href="#" class="list-group-item list-group-item-action">{{user.email}}</a>
+                    <a href="{% url 'profile' user.email  %} " class="list-group-item list-group-item-action">
+                            update Profile
+                        </a>
+                    {% for i in playlist %}
+                        <a href="{% url 'play_list' i.id %} " class="list-group-item list-group-item-action">
+                            {{i.name}}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="mt-2">
+                        <form method="get" action="{% url 'search' %}" class="w-50 mx-auto mt-3" role="search">
+
+                         <div class="d-flex flex-row justify-content-center">
+                            <input name ="search" value="{{ request.GET.search }}" class="form-control ms-5 me-2" type="search" placeholder="Search" aria-label="Search" />
+                            <button  class="btn btn-secondary" type="submit">Search</button>
+                        </div>
+                        </form>
+                    </div>
+
+                    <div class="card-body">
+                    {% block search %}
+                    {% endblock %}
+
+                        <hr>
+                        <h4>Albums</h4>
+                        {% for j in album %}
+                           <a href="{% url 'album' j.id %}"> <div class="d-flex flex-column">
+                                <img src="{{j.cover.url}}" style="height:200px;width:200px"/>
+                                <p>{{j.name}}</p>
+                            </div></a>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
