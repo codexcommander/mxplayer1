@@ -7,6 +7,7 @@ from user.models import *
 from artist.models import *
 from django.contrib.auth import get_user_model
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -26,10 +27,13 @@ class Dashboard_view(APIView):
             "albums" : albums_data
         })
     def post(self,request,email):
+        user = get_object_or_404(User, email=email)
+        data = request.data.copy()
+        data['user'] = user.id
         serializer = PlaylistSerializer(data = request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            playlist = serializer.save(user=user)
+            return Response(PlaylistSerializer(playlist).data)
         else:
             return Response(serializer.errors)
 
@@ -62,7 +66,7 @@ class playlist_view(APIView):
             return Response({"error": "Playlist not found"})
 
 
-    def delete(self,id):
+    def delete(self,request,id):
         try:
             playlist = Playlist.objects.get(id=id)
             playlist.delete()
@@ -70,7 +74,7 @@ class playlist_view(APIView):
 
         except Playlist.DoesNotExist:
             return Response({"error": "Playlist not found"})
-    def put(self,id):
+    def put(self,request,id):
         try:
             playlist = Playlist.objects.get(id=id)
 
@@ -84,13 +88,14 @@ class playlist_view(APIView):
             return Response({"error": "Playlist not found"})
 
 class Song_Playlist(APIView):
-    def get(self,id):
+    def get(self,request,id):
+
         song = Song.objects.filter(playlist__id = id)
         serializer = SongSerializer(song,many=True)
         return Response(serializer.data)
 
 class Song_album(APIView):
-    def get(self,id):
+    def get(self,request,id):
         song = Song.objects.filter(album__id = id)
         serializer = SongSerializer(song,many=True)
         return Response(serializer.data)
